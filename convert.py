@@ -1,6 +1,7 @@
 import pandas
 import xlwt
 from xmindparser import xmind_to_dict
+import os
 
 
 def handle_xmind(filename):
@@ -48,27 +49,26 @@ def handle_title(topics):
         for i in l:
             if "模块" in i.split("_"):
                 dict["model"] = i[3:]
-            elif "需求:" in i or "需求：" in i:
+            elif ("需求：" in i) or ("需求:" in i):
                 dict["story"] = i[3:]
-            elif "功能细项:" in i or "功能细项：" in i:
+            elif ("功能细项：" in i) or ("功能细项:" in i):
                 dict["function"] = i[5:]
-            elif "用例:" in i or "用例：" in i:
+            elif ("用例：" in i) or ("用例:" in i):
                 dict["case"] = i[3:]
-            elif "步骤：" in i or "步骤:" in i:
+            elif ("步骤：" in i) or ("步骤:" in i):
                 dict["step"] = i[3:]
-            elif "预期：" in i or "预期:" in i:
+            elif ("预期：" in i) or ("预期:" in i):
                 dict["expect"] = i[3:]
             elif "priority" in i:
                 dict["step"] = i.split("priority-")[0]
                 dict["expect"] = i.split("priority-")[0]
                 dict["priority"] = i.split("priority-")[1]
-            elif "关键词：" in i or "关键词:" in i:
-                dict["keywords"] = i[4:]
-            elif "是否安全测试：" in i or "是否安全测试:" in i:
-                dict["keywords"] = i[7:]
             else:
                 try:
-                    dict["case"] = dict["case"] + "_" + i
+                    try:
+                        dict["case"] = dict["case"] + "_" + i
+                    except:
+                        dict["case"] = i
                 except:
                     pass
         list.append(dict)
@@ -100,7 +100,7 @@ def write_to_temp1(list, excelname):
     f = xlwt.Workbook()
     # 生成excel文件
     sheet = f.add_sheet('测试用例', cell_overwrite_ok=True)
-    row0 = ['所属模块', '用例标题', '步骤', '预期', '优先级', '用例类型', '关键词']
+    row0 = ['所属模块', '用例标题', '步骤', '预期', '优先级', '用例类型']
     # 生成第一行中固定表头内容
     for i in range(0, len(row0)):
         sheet.write(0, i, row0[i])
@@ -128,10 +128,6 @@ def write_to_temp1(list, excelname):
         except:
             sheet.write(index + 1, 4, "3")
         sheet.write(index + 1, 5, "功能测试")
-        try:
-            sheet.write(index + 1, 6, d["keywords"])
-        except:
-            sheet.write(index + 1, 6, "是否需要安全测试：否")
     f.save(excelname)
     csvname = excelname.split(".xls")[0] + ".csv"
     ex = pandas.read_excel(excelname)
@@ -200,7 +196,7 @@ def write_to_temp2(list, excelname):
     f = xlwt.Workbook()
     # 生成excel文件
     sheet = f.add_sheet('测试用例', cell_overwrite_ok=True)
-    row0 = ['产品/项目模块', '所属需求', '功能细项', '用例等级', '用例描述', '预置条件', '操作步骤', '预期结果', '是否安全测试']
+    row0 = ['产品/项目模块', '所属需求', '功能细项', '用例等级', '用例描述', '预置条件', '操作步骤', '预期结果']
     # 生成第一行中固定表头内容
     for i in range(0, len(row0)):
         sheet.write(0, i, row0[i])
@@ -232,8 +228,4 @@ def write_to_temp2(list, excelname):
             sheet.write(index + 1, 7, d["expect"])
         except:
             pass
-        try:
-            sheet.write(index + 1, 8, d["keywords"])
-        except:
-            sheet.write(index + 1, 8, "否")
     f.save(excelname)
