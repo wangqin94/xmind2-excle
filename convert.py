@@ -196,7 +196,7 @@ def write_to_temp2(list, excelname):
     f = xlwt.Workbook()
     # 生成excel文件
     sheet = f.add_sheet('测试用例', cell_overwrite_ok=True)
-    row0 = ['产品/项目模块', '所属需求', '功能细项', '用例等级', '用例描述', '预置条件', '操作步骤', '预期结果']
+    row0 = ['用例目录', '所属需求', '功能细项',  '用例名称', '前置条件', '用例步骤', '预期结果', '用例类型', '用例状态', '用例等级', '创建人']
     # 生成第一行中固定表头内容
     for i in range(0, len(row0)):
         sheet.write(0, i, row0[i])
@@ -215,17 +215,20 @@ def write_to_temp2(list, excelname):
             sheet.write(index + 1, 2, d["function"])
         except:
             pass
-        sheet.write(index + 1, 3, "全量测试")
         try:
-            sheet.write(index + 1, 4, d["case"])
+            sheet.write(index + 1, 3, d["case"])
         except:
             pass
         try:
-            sheet.write(index + 1, 6, d["step"])
+            sheet.write(index + 1, 5, d["step"])
         except:
             pass
         try:
-            sheet.write(index + 1, 7, d["expect"])
+            sheet.write(index + 1, 6, d["expect"])
         except:
             pass
+        sheet.write(index + 1, 7, "功能测试")
+        sheet.write(index + 1, 8, "正常")
+        sheet.write(index + 1, 9, "高")
+        sheet.write(index + 1, 10, "王沁")
     f.save(excelname)
