@@ -50,7 +50,7 @@ def handle_title(topics):
             if "模块" in i.split("_"):
                 dict["model"] = i[3:]
             elif ("需求：" in i) or ("需求:" in i):
-                dict["story"] = i[3:]
+                dict["story"] = i[7:]
             elif ("功能细项：" in i) or ("功能细项:" in i):
                 dict["function"] = i[5:]
             elif ("用例：" in i) or ("用例:" in i):
@@ -100,7 +100,7 @@ def write_to_temp1(list, excelname):
     f = xlwt.Workbook()
     # 生成excel文件
     sheet = f.add_sheet('测试用例', cell_overwrite_ok=True)
-    row0 = ['所属模块', '用例标题', '步骤', '预期', '优先级', '用例类型']
+    row0 = ['所属模块','相关研发需求', '用例名称', '步骤', '预期', '优先级', '用例类型', '执行人']
     # 生成第一行中固定表头内容
     for i in range(0, len(row0)):
         sheet.write(0, i, row0[i])
@@ -112,22 +112,27 @@ def write_to_temp1(list, excelname):
         except:
             pass
         try:
-            sheet.write(index + 1, 1, d["case"])
+            sheet.write(index + 1, 1, d["story"])
         except:
             pass
         try:
-            sheet.write(index + 1, 2, d["step"])
+            sheet.write(index + 1, 2, d["case"])
         except:
             pass
         try:
-            sheet.write(index + 1, 3, d["expect"])
+            sheet.write(index + 1, 3, d["step"])
         except:
             pass
         try:
-            sheet.write(index + 1, 4, d["priority"])
+            sheet.write(index + 1, 4, d["expect"])
         except:
-            sheet.write(index + 1, 4, "3")
-        sheet.write(index + 1, 5, "功能测试")
+            pass
+        try:
+            sheet.write(index + 1, 5, d["priority"])
+        except:
+            sheet.write(index + 1, 6, "3")
+        sheet.write(index + 1, 7, "功能测试")
+        sheet.write(index + 1, 8, "吴波")
     f.save(excelname)
     csvname = excelname.split(".xls")[0] + ".csv"
     ex = pandas.read_excel(excelname)
